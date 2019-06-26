@@ -19,6 +19,8 @@ tipo : 	 INT LBRACKET RBRACKET # intVet
 	| ID  # id
 	; 
 
+var = 2;
+
 cmd : 
 LKEY cmd* RKEY 
 #nestedStatement
@@ -30,7 +32,7 @@ LKEY cmd* RKEY
 #printStatement
 | ID ATTR exp SEMI 
 #variableAssignmentStatement
-| ID LBRACKET exp RBRACKET ATTR exp
+| ID LBRACKET exp RBRACKET ATTR exp 
 #arrayAssignmentStatement
 ;
 
@@ -38,18 +40,32 @@ exp : rexp (exp_aux)? ;
 exp_aux : AND rexp (exp_aux)? ;
 
 rexp : aexp (rexp_aux)? ;
-rexp_aux : (LT aexp (rexp_aux)? | EQ aexp (rexp_aux)? | NOTEQ aexp (rexp_aux)? ) ;
+rexp_aux : LT aexp (rexp_aux)? 
+		 | EQ aexp (rexp_aux)? 
+		 | NOTEQ aexp (rexp_aux)?  ;
 
 aexp : mexp (aexp_aux)? ;
-aexp_aux : (PLUS mexp (aexp_aux)? | MINUS mexp (aexp_aux)?);
+aexp_aux : PLUS mexp (aexp_aux)? 
+		 | MINUS mexp (aexp_aux)? ;
 
 mexp : sexp (mexp_aux)? ;
-mexp_aux : (MULT sexp (mexp_aux)? | DIV sexp (mexp_aux)? );
+mexp_aux : 	MULT sexp (mexp_aux)? 
+			| DIV sexp (mexp_aux)? ;
 
-sexp : (NOT sexp | MINUS sexp | TRUE | FALSE | INTEIRO | NULL | NEW INT LBRACKET exp RBRACKET | 
-pexp (DOT LENGTH | pexp LBRACKET exp RBRACKET)? ) ;
+sexp : NOT sexp 
+	| MINUS sexp 
+	| TRUE 
+	| FALSE 
+	| INTEIRO 
+	| NULL 
+	| NEW INT LBRACKET exp RBRACKET 
+	| pexp (DOT LENGTH | LBRACKET exp RBRACKET)?  ;
 
-pexp : ID (pexp_aux)? | THIS (pexp_aux)? | NEW ID LPAREN RPAREN (pexp_aux)? | LPAREN exp RPAREN (pexp_aux)? ;
+pexp : ID (pexp_aux)? 
+	| THIS (pexp_aux)? 
+	| NEW ID LPAREN RPAREN (pexp_aux)? 
+	| LPAREN exp RPAREN (pexp_aux)? ;
+
 pexp_aux : DOT ID (LPAREN (exps)? RPAREN)? (pexp_aux)? ;
 
 exps : exp (COMMA exp)*;

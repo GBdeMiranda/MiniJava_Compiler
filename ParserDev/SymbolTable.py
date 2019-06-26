@@ -56,25 +56,36 @@ class SymbolTable:
         while pos == -1 and p != None:
             if p.ttype[0] != 'classe':
                 try:
-                    pos = self.p.name.index(name)
+                    pos = p.name.index(name)
                 except Exception:
                     p = p.previous 
             else:
                 try:
-                    pos = self.p.name.index(name)
+                    pos = p.name.index(name)
                 except Exception:
                     p = p.extendedTable
-        if p.name.index(name) == p.name[pos]:
+                    
+        if pos != -1 and p.name[pos] == name:
             return p.ttype[pos]
         return None
-    
+
+    def findFunction(self, name, tamTabela):
+        p = self
+        while p.ttype[0] != 'classe':
+            p = p.previous
+            
+        tamTabela_aux = 0
+        while tamTabela_aux <= tamTabela and p != None :
+            funcoes = p.functions
+            for i in range(len(funcoes)):
+                if funcoes[i].name == name:
+                    return funcoes[i]
+            p = p.extendedTable
+            tamTabela_aux = tamTabela_aux + 1
+            
+        return None
+                
+
     def addFunction(self, function):
         self.functions.append(function)
-        
-    def findFunction(self,name):
-        for i in len(self.functions):
-            if self.functions[i].getName() == name:
-                return self.functions[i]
-        #funcao nao existe
-        return False
-            
+                    
