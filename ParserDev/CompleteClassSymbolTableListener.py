@@ -8,11 +8,11 @@ Created on Fri Jun 21 20:24:59 2019
 import sys
 from antlr4 import *
 from MiniJavaParser import MiniJavaParser
-from MiniJavaBaseListener import MiniJavaBaseListener
+from MiniJavaListener import MiniJavaListener
 from SymbolTable import SymbolTable
 from InfoFunction import InfoFunction
 
-class CompleteClassSymbolTableListener(MiniJavaBaseListener):
+class CompleteClassSymbolTableListener(MiniJavaListener):
 
     def __init__(self):
         self.table = [SymbolTable()] #lista com as tabelas de cada classe.
@@ -29,20 +29,20 @@ class CompleteClassSymbolTableListener(MiniJavaBaseListener):
                 for j in range(len(self.table)):
                     if self.table[i].extendedName == self.table[j].name[0] :
                         flag = 1
-                        if i==j:                        	
+                        if i==j:
                             print("Não é possível a classe herdar ela própria!")
-							linha = ctx.getChild(i).ID(0).symbol.line
-			                coluna = ctx.getChild(i).ID(0).symbol.column
-			                print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
-			                sys.exit()
+                            linha = ctx.getChild(i).ID(0).symbol.line
+                            coluna = ctx.getChild(i).ID(0).symbol.column
+                            print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
+                            sys.exit()
                         else:
                             self.table[i].extending(self.table[j])
                 if flag == 0:
                     print("classe '" + self.table[i].name[0] + "' herda da classe '" + self.table[i].extendedName + "'. Mas a classe '" + self.table[i].extendedName + "' não existe!")
-					linha = ctx.getChild(i).ID(0).symbol.line
-                	coluna = ctx.getChild(i).ID(0).symbol.column
-                	print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
-                	sys.exit()
+                    linha = ctx.getChild(i).ID(0).symbol.line
+                    coluna = ctx.getChild(i).ID(0).symbol.column
+                    print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
+                    sys.exit()
 
         for i in range(len(self.table)):
             if self.table[i].visitado == 0:
@@ -55,10 +55,10 @@ class CompleteClassSymbolTableListener(MiniJavaBaseListener):
                     p = p.extendedTable
                 if p != None and p.name[0] == name:
                     print("Erro de Herança Circular")
-					linha = ctx.getChild(i).ID(0).symbol.line
-                	coluna = ctx.getChild(i).ID(0).symbol.column
-                	print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
-                	sys.exit()
+                    linha = ctx.getChild(i).ID(0).symbol.line
+                    coluna = ctx.getChild(i).ID(0).symbol.column
+                    print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
+                    sys.exit()
 
                     
     # Enter a parse tree produced by MiniJavaParser#mainClass.

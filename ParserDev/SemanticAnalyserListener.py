@@ -327,7 +327,7 @@ class SemanticAnalyserListener(MiniJavaListener):
             elif ctx.NULL() != None:
                 self.dicionarioTipos[ctx.__hash__()]  = 'null'
             elif ctx.pexp() != None:
-                self.dicionarioTipos[ctx.__hash__()]  = self.dicionarioTipos[ctx.pexp(0).__hash__()]                
+                self.dicionarioTipos[ctx.__hash__()]  = self.dicionarioTipos[ctx.pexp().__hash__()]                
         elif ctx.getChildCount() == 2:
             tipo_d = self.dicionarioTipos[ctx.sexp().__hash__()]  
             if ctx.NOT() != None:

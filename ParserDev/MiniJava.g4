@@ -19,8 +19,6 @@ tipo : 	 INT LBRACKET RBRACKET # intVet
 	| ID  # id
 	; 
 
-var = 2;
-
 cmd : 
 LKEY cmd* RKEY 
 #nestedStatement

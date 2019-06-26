@@ -14,12 +14,12 @@ from SemanticAnalyserListener import SemanticAnalyserListener
 import sys
 
 if __name__ == '__main__':
-#    if len(sys.argv) > 1:
-#        input_stream = FileStream(sys.argv[1])
-#    else:
-#        print("Insert the file content: ")
-#        input_stream = InputStream(sys.stdin.readline())
-    input_stream = FileStream("Teste.java")
+    if len(sys.argv) > 1:
+        input_stream = FileStream(sys.argv[1])
+    else:
+        print("Insert the file content: ")
+        input_stream = InputStream(sys.stdin.readline())
+
     lexer = MiniJavaLexer( input_stream )   
     token_stream = CommonTokenStream(lexer) 
     parser = MiniJavaParser(token_stream)

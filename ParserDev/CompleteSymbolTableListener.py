@@ -8,11 +8,11 @@ Created on Fri Jun 21 14:06:59 2019
 import sys
 from antlr4 import *
 from MiniJavaParser import MiniJavaParser
-from MiniJavaBaseListener import MiniJavaBaseListener
+from MiniJavaListener import MiniJavaListener
 from InfoFunction import InfoFunction
 from SymbolTable import SymbolTable
 
-class CompleteSymbolTableListener(MiniJavaBaseListener):
+class CompleteSymbolTableListener(MiniJavaListener):
     
     def __init__(self,table):
         self.table = table #lista com as tabelas de cada classe.
