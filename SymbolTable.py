@@ -53,17 +53,24 @@ class SymbolTable:
     def findID(self, name):
         pos = -1
         p = self
-        while pos == -1 and p != None:
-            if p.ttype[0] != 'classe':
-                try:
-                    pos = p.name.index(name)
-                except Exception:
-                    p = p.previous 
+        while pos == -1 and p != None:    
+#            if(p.ttype)
+            if len(p.ttype) != 0:
+                if p.ttype[0] != 'classe':
+                    try:
+                        pos = p.name.index(name)
+                    except Exception:
+                        p = p.previous 
+                else:
+                    try:
+                        pos = p.name.index(name)
+                    except Exception:
+                        p = p.extendedTable
             else:
-                try:
-                    pos = p.name.index(name)
-                except Exception:
-                    p = p.extendedTable
+                p = p.previous
+                
+            
+            
                     
         if pos != -1 and p.name[pos] == name:
             return p.ttype[pos]

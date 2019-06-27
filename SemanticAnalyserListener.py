@@ -24,9 +24,11 @@ class SemanticAnalyserListener(MiniJavaListener):
         self.funcAtual = 0
     
     #retorna true se a é subtipo de b, ou seja, a extends b ou a extends... extends b
-    def ehSubtipo(a, b):
+    def ehSubtipo(self, a, b):
         if a == b:
             return True
+        elif a == 'int' or a == 'int[]' or a == 'boolean' or b == 'int' or b == 'int[]' or b == 'boolean' :
+            return False
         else:
             son = 0
             for i in range(len(self.table)):
@@ -38,7 +40,7 @@ class SemanticAnalyserListener(MiniJavaListener):
                 if father.name[0] == b:
                     return True
                 father = father.extendedTable            
-            return False
+        return False
                 
     # Enter a parse tree produced by MiniJavaParser#classDecl.
     def enterClassDecl(self, ctx:MiniJavaParser.ClassDeclContext):
@@ -112,6 +114,7 @@ class SemanticAnalyserListener(MiniJavaListener):
     def exitVariableAssignmentStatement(self, ctx:MiniJavaParser.VariableAssignmentStatementContext):
         name = ctx.ID().getText()
         tipo1 = self.tableAtual.findID(name)
+        
         if tipo1 == None:
             print("Variavel '" + name + "' não declarada!")
         else:         
@@ -123,7 +126,7 @@ class SemanticAnalyserListener(MiniJavaListener):
                     coluna = ctx.ID().symbol.column
                     print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
             else:
-                if tipo2 != 'null' and not(self.ehSubtipo(tipo2, name)) :
+                if tipo2 != 'null' and not(self.ehSubtipo(tipo2, tipo1)) :    
                     print("Erro na atribuição pois as variaveis são de tipos diferentes!")
                     linha = ctx.ID().symbol.line
                     coluna = ctx.ID().symbol.column
@@ -140,7 +143,7 @@ class SemanticAnalyserListener(MiniJavaListener):
             print("Erro na linha "+ str(linha) +", coluna " + str(coluna) +" ." )
                     
         name = ctx.ID().getText()
-        tipo_id = self.tableAtual.find(name)
+        tipo_id = self.tableAtual.findID(name)
 
         if tipo_id == None:
             print("Variavel '" + name + "' não declarada!")
@@ -401,9 +404,12 @@ class SemanticAnalyserListener(MiniJavaListener):
                 self.dicionarioTipos[ctx.__hash__()] = tipo_classe
                 
         elif ctx.getChildCount() == 2:
-            if ctx.ID() != None :    
+            if ctx.ID() != None : 
+                flag = 0
                 for i in range(len(self.table)):
-                    if(ctx.ID().getText() == self.table[i].name[0]):
+                    classe = self.tableAtual.findID(ctx.ID().getText())
+                    if(classe == self.table[i].name[0]):
+                        flag = 1
                         if(ctx.pexp_aux().LPAREN() != None ):
                             funcaoAux = self.table[i].findFunction(ctx.pexp_aux().getChild(1).getText(), len(self.table))
                             if funcaoAux != None:
@@ -426,7 +432,10 @@ class SemanticAnalyserListener(MiniJavaListener):
                                 print("Erro na linha "+ str(linha) + ", coluna " + str(coluna) +" ." )                            
                                 sys.exit()
                             break
-
+                if flag == 0:
+                    print(ctx.ID().getText())
+                    print("Erro!!")
+                    sys.exit()
                             
                         
             elif ctx.THIS() != None :
@@ -638,7 +647,6 @@ class SemanticAnalyserListener(MiniJavaListener):
         else:
             funcaoAux = None
             pos = 0
-            
             #buscando funcao cujo identificador é ID
             while funcaoAux == None and pos < len(self.table):
                 table_aux = self.table[pos]
@@ -658,14 +666,16 @@ class SemanticAnalyserListener(MiniJavaListener):
                     # compativeis com os tipos dos parametros que a funcao recebe    
                     if tamParamsRecebidos == tamList:                        
                         for i in range(tamList):
-                            param_a = listParametros[i]
-                            param_b = paramsRecebidos[i]
-                            if param_a != param_b and not(self.ehSubtipo(param_b, param_a)):
-                                print("Parametro '" + ctx.exps().exp(i).getText() + "'' passado pra função' " + funcaoAux.name + "'' não é do tipo " + param_a +".")
+                            paramA = listParametros[i]
+                            paramB = paramsRecebidos[i]
+                            if paramA != paramB and not(self.ehSubtipo(paramB,paramA) ):
+                                print("Parametro '" + ctx.exps().exp(i).getText() + "' passado pra função '" + funcaoAux.name + "' não é do tipo '" + paramA +"'.")
                                 linha = ctx.getChild(0).symbol.line
                                 coluna = ctx.getChild(0).symbol.column
                                 print("Erro na linha "+ str(linha) + " coluna " + str(coluna) +" ." )                            
                     else:
+                        print("aqui")
+                        print(listParametros)
                         print("Numero de parametros passados para a função '" + funcaoAux.name + "' é incompativel.")
                         linha = ctx.getChild(0).symbol.line
                         coluna = ctx.getChild(0).symbol.column
@@ -674,8 +684,7 @@ class SemanticAnalyserListener(MiniJavaListener):
             else:
                 linha = ctx.ID().symbol.line
                 coluna = ctx.ID().symbol.column
-                print(ctx.ID().getText())
-                print("Função '" + ctx.ID.getText() + "' não encontrada")
+                print("Função '" + ctx.ID().getText() + "' não encontrada")
                 print("linha: " + str(linha) + " coluna: "+str(coluna))
                 sys.exit()        
 

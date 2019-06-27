@@ -30,7 +30,7 @@ LKEY cmd* RKEY
 #printStatement
 | ID ATTR exp SEMI 
 #variableAssignmentStatement
-| ID LBRACKET exp RBRACKET ATTR exp 
+| ID LBRACKET exp RBRACKET ATTR exp SEMI
 #arrayAssignmentStatement
 ;
 
@@ -44,7 +44,7 @@ rexp_aux : LT aexp (rexp_aux)?
 
 aexp : mexp (aexp_aux)? ;
 aexp_aux : PLUS mexp (aexp_aux)? 
-		 | MINUS mexp (aexp_aux)? ;
+	| MINUS mexp (aexp_aux)? ;
 
 mexp : sexp (mexp_aux)? ;
 mexp_aux : 	MULT sexp (mexp_aux)? 

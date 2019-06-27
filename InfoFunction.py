@@ -33,6 +33,6 @@ class InfoFunction:
         return self.paramsType
     
     def cleanFunction(self):
-        self.name = []
-        self.returnType = []
+        self.name = ''
+        self.returnType = ''
         self.paramsType = []

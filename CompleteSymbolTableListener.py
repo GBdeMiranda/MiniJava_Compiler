@@ -11,6 +11,7 @@ from MiniJavaParser import MiniJavaParser
 from MiniJavaListener import MiniJavaListener
 from InfoFunction import InfoFunction
 from SymbolTable import SymbolTable
+import copy as cp
 
 class CompleteSymbolTableListener(MiniJavaListener):
     
@@ -91,7 +92,10 @@ class CompleteSymbolTableListener(MiniJavaListener):
     # Exit a parse tree produced by MiniJavaParser#metodo.
     def exitMetodo(self, ctx:MiniJavaParser.MetodoContext):
         self.tableAtual = self.tableAtual.previous
-        self.tableAtual.addFunction(self.funcAux)
+        newFunction = InfoFunction()
+        newFunction = cp.copy(self.funcAux)
+        self.tableAtual.addFunction(newFunction)
+        self.funcAux.cleanFunction()
 
 
     # Enter a parse tree produced by MiniJavaParser#parametros.
