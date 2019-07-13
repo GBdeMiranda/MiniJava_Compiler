@@ -12,6 +12,13 @@ from MiniJavaListener import MiniJavaListener
 from SymbolTable import SymbolTable
 from InfoFunction import InfoFunction
 
+printado = False
+def new_print(x):
+    print(x)
+    global printado
+    printado = True
+print = new_print
+
 class SemanticAnalyserListener(MiniJavaListener):
     
     def __init__(self,table):
@@ -22,6 +29,7 @@ class SemanticAnalyserListener(MiniJavaListener):
         self.iteradorMetodo = 0
         self.dicionarioTipos = dict()
         self.funcAtual = 0
+    
     
     #retorna true se a é subtipo de b, ou seja, a extends b ou a extends... extends b
     def ehSubtipo(self, a, b):
